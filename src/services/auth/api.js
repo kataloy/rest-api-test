@@ -1,7 +1,7 @@
 const config = require("../../config");
 const { HttpError } = require("../../errors");
 const md5 = require("md5");
-const jwt  = require("jsonwebtoken");
+const {createToken} = require("../../utils/token");
 const {Users} = require("../../models");
 
 const signUp = async ({ username, password }) => {
@@ -18,13 +18,15 @@ const login = async ({ username, password }) => {
 
     const user = await Users.findOne({ username, password: passwordHash });
 
+    console.log(user);
+
     if (!user) {
         throw new HttpError(401, "Unauthorized");
     }
 
-    const token = jwt.sign({
-        username,
-    }, config.jwt.secret);
+    const token = await createToken({
+        id: user._id,
+    });
 
     return {token};
 }

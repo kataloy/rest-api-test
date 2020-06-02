@@ -1,18 +1,13 @@
-const jwt = require("jsonwebtoken");
-const config = require("../config");
+const { verifyToken } = require("../utils/token");
 
-module.exports = (req, res, next) => {
+module.exports = async (req, res, next) => {
   const { authorization } = req.headers;
   const token = authorization.replace("bearer ", "");
 
   try {
-    req.user = jwt.verify(token, config.jwt.secret);
-  } catch (err) {
-    if (err instanceof jwt.JsonWebTokenError) {
-      return res.status(401).end();
-    }
-
-    return res.status(400).end();
+    req.user = await verifyToken(token);
+  } catch {
+    return res.status(401).end();
   }
 
   return next();
