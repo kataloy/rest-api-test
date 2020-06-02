@@ -1,26 +1,24 @@
-const express = require("express");
-const bodyParser = require("body-parser");
+const Koa = require('koa');
+const Router = require('@koa/router');
+const bodyParser = require('koa-bodyparser');
+const handleError = require('./middlewares/handleError');
 const { auth, films, favorites, } = require('./services');
 
-const app = express();
-const port = 8080;
+const PORT = 8080;
 
-app.use(bodyParser.json());
+const app = new Koa();
+const router = new Router({ prefix: '/api' });
 
-auth(app);
-films(app);
-favorites(app);
+app.on('error', console.error);
 
-app.use((err, req, res, next) => {
-    const status = err.status || 500;
-    const message = status >= 500 ? "Internal server error" : err.message;
+auth(router);
+films(router);
+favorites(router);
 
-    res.status(status);
-    res.json({ error: message });
+app.use(bodyParser());
+app.use(handleError);
+app.use(router.routes());
 
-    console.error('123 error', err);
-});
-
-app.listen(port, () => {
-    console.log(`server is listening on ${port}`);
+app.listen(PORT, () => {
+    console.log(`server is listening on ${PORT}`);
 })

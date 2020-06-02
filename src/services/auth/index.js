@@ -1,15 +1,11 @@
 const api = require("./api")
 
-module.exports = (app) => {
-  app.post("/signup", async (req, res) => {
-    res.json(await api.signUp(req.body));
+module.exports = (router) => {
+  router.post("/signup", async (ctx) => {
+    ctx.body = await api.signUp(ctx.request.body);
   });
 
-  app.post("/login", async (req, res, next) => {
-    try {
-      res.json(await api.login(req.body));
-    } catch (err) {
-      next(err)
-    }
+  router.post("/login", async (ctx) => {
+    ctx.body = await api.login(ctx.request.body);
   });
 };

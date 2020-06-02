@@ -1,14 +1,14 @@
 const { verifyToken } = require("../utils/token");
 
-module.exports = async (req, res, next) => {
-  const { authorization } = req.headers;
+module.exports = async (ctx, next) => {
+  const { authorization } = ctx.headers;
   const token = authorization.replace("bearer ", "");
 
   try {
-    req.user = await verifyToken(token);
+    ctx.state.user = await verifyToken(token);
   } catch {
-    return res.status(401).end();
+    ctx.throw(401);
   }
 
-  return next();
+  await next();
 };
