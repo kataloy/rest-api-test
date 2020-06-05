@@ -6,7 +6,8 @@ module.exports = async (ctx, next) => {
 
   try {
     ctx.state.user = await verifyToken(token);
-  } catch {
+  } catch (e) {
+    console.error(e);
     ctx.throw(401);
   }
 

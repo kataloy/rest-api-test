@@ -6,7 +6,7 @@ jwt.sign = util.promisify(jwt.sign);
 jwt.verify = util.promisify(jwt.verify);
 
 const createToken = (payload, secret = config.jwt.secret) => jwt.sign(payload, secret);
-const verifyToken = (token, secret) => jwt.verify(token, secret);
+const verifyToken = (token, secret = config.jwt.secret) => jwt.verify(token, secret);
 
 module.exports = {
   createToken,
